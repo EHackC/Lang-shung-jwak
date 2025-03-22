@@ -7,10 +7,31 @@ section ".text" code readable executable
     start:
         sub rsp, 8 * 5
 
+        call [GetProcessHeap]
+        mov [_heap_handle], rax
+
         mov rcx, _file
         mov rdx, [_file_size]
-        mov r8, _output
+        mov r8, _text_length
+        call get_utf8_text_length
+
+        mov rax, [_text_length]
+        shl rax, 2
+        mov rcx, [_heap_handle]
+        mov rdx, 0
+        mov r8, rax
+        call [HeapAlloc]
+        mov [_output_addr], rax
+
+        mov rcx, _file
+        mov rdx, [_file_size]
+        mov r8, [_output_addr]
         call decode_utf8_list
+
+        mov rcx, [_heap_handle]
+        mov rdx, 0
+        mov r8, [_output_addr]
+        call [HeapFree]
 
         mov ecx, 0
         call [ExitProcess]
@@ -21,7 +42,9 @@ section ".data" data readable writeable
         ; 밥바라밥밥 바라바라바라~
         ; 정실은 마요
     _file_size dq 118
-    _output dq 48 dup(0)
+    _text_length dq 0
+    _output_addr dq 0
+    _heap_handle dq 0
 
 section ".idata" import data readable writeable
     dd 0, 0, 0, RVA kernel_name, RVA kernel_table
@@ -30,7 +53,16 @@ section ".idata" import data readable writeable
     kernel_name db "KERNEL32.DLL", 0
     kernel_table:
         ExitProcess dq RVA _ExitProcess
+        GetProcessHeap dq RVA _GetProcessHeap
+        HeapAlloc dq RVA _HeapAlloc
+        HeapFree dq RVA _HeapFree
         dq 0
 
     _ExitProcess dw 0
         db "ExitProcess", 0
+    _GetProcessHeap dw 0
+        db "GetProcessHeap", 0
+    _HeapAlloc dw 0
+        db "HeapAlloc", 0
+    _HeapFree dw 0
+        db "HeapFree", 0
