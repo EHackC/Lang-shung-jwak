@@ -44,10 +44,38 @@ decode_utf8_list:
         shl eax, 18
         or eax, ebx
 
-        movbe [r8], eax
+        mov [r8], eax
         add r8, 4
 
         test rdx, rdx
         jne .decode_utf8_loop
+
+    ret
+
+get_utf8_text_length:
+    ; rcx - file(addr) -> r10
+    ; rdx - file size
+    ; r8 - result(addr)
+
+    mov r10, rcx
+
+    .utf8_length_loop:
+        movbe eax, dword [r10]
+        mov ebx, eax
+        mov ecx, eax
+        sar ecx, 1
+        and ebx, ecx
+        sar ecx, 1
+        and ebx, ecx
+        shr ebx, 28
+        or ebx, 0x8 ; 0b1000
+        popcnt ecx, ebx
+        sub rdx, rcx
+        add r10, rcx
+
+        add qword [r8], 1
+
+        test rdx, rdx
+        jne .utf8_length_loop
 
     ret
