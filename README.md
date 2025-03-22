@@ -46,7 +46,8 @@
 
 문자열 탐색 기반으로 코드가 짜여져 있어 예외 처리가 제대로 되지 않은 곳이 많을 수 있습니다 (오류가 많다는 뜻).
 
-온라인으로 코드 실행할 수 있는 곳 [[여기](https://nabibear33.github.io/jwak/)]
+온라인으로 코드 실행할 수 있는 곳 [[여기](https://nabibear33.github.io/jwak/)]  
+랭슝좍 언어를 보기 쉽게 해주는 [[하이라이터](https://marketplace.visualstudio.com/items?itemName=ngvf1222.lang-shung-jwak-highlighter)]
 
 ## 개요
 
@@ -60,9 +61,24 @@
 
 ## 업데이트
 
-2025-02-17 파이썬 구현체 추가  
-2025-02-18 C# 구현체 추가 및 입출력 개선  
-2025-02-22 C++ 구현체 추가
+2025-02-17 Python 구현체 추가  
+2025-02-18 C# 구현체 추가, 입출력 개선  
+2025-02-22 C++ 구현체 추가  
+2025-02-24 Scala 3 구현체 추가, 문장을 코드로 변환하는 파이썬 코드 추가  
+2025-03-01 JS 구현체 추가, 웹 기반 playground 추가  
+2025-03-03 Rust 구현체 추가  
+
+## 언어별 사용법
+
+언어별 README.md로 연결됩니다.
+
+[[Python](https://github.com/nabibear33/Lang-shung-jwak/blob/main/jwak_python/README.md)]
+[C#]
+[[C++](https://github.com/nabibear33/Lang-shung-jwak/blob/main/jwak_cpp/README.md)]
+[[Scala3](https://github.com/nabibear33/Lang-shung-jwak/blob/main/jwak_scala/README.md)]
+[[JS](https://github.com/nabibear33/Lang-shung-jwak/blob/main/jwak_js/README.md)]
+[[Rust](https://github.com/nabibear33/Lang-shung-jwak/blob/main/jwak_rust/README.md)]
+
 
 
 ## 문법
@@ -128,7 +144,7 @@
 슝좍                    # 첫번째 변수에 1을 대입.
 슝...?좍!!!            # 첫번째 변수에 1을 대입. (.?!를 적절히 배치)
 슈웅좌아악,좌악,좌악     # 두번째 변수에 3x2x2=12를 대입.
-슈우웅슈웅~슝           # 세번째 변수에 두번째 변수의 값 + 첫번째 변수의 값 = 7을 대입.
+슈우웅슈웅~슝           # 세번째 변수에 두번째 변수의 값 + 첫번째 변수의 값 = 13을 대입.
 ```
 
 
@@ -280,12 +296,4 @@ Hello, world!
 출력
 ```
 >> RecursionError: Line 6에서 타임 패러독스!
-```
-
-## 로컬 실행(파이썬)
-
-1. 깃허브 파일을 다운받고 압축을 풀어주세요.
-2. 터미널을 열고 루트 폴더에서 다음 명령어를 실행하세요.
-```bash
-python -m jwak_python .\example\hello_world.jwak
 ```
