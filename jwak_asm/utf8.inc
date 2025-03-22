@@ -14,7 +14,7 @@ decode_utf8_list:
         sar ecx, 1
         and ebx, ecx
         shr ebx, 28
-        or ebx, 4; 0b100
+        or ebx, 0x8 ; 0b1000
         popcnt ecx, ebx
         sub rdx, rcx
         add r10, rcx
@@ -44,7 +44,7 @@ decode_utf8_list:
         shl eax, 18
         or eax, ebx
 
-        mov [r8], eax
+        movbe [r8], eax
         add r8, 4
 
         test rdx, rdx
