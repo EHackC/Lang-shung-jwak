@@ -1,6 +1,8 @@
 format PE64 console
 entry start
 
+include "../utf8.inc"
+
 section ".text" code readable executable
     start:
         sub rsp, 8 * 5
@@ -19,7 +21,7 @@ section ".data" data readable writeable
         ; 밥바라밥밥 바라바라바라~
         ; 정실은 마요
     _file_size dq 118
-    _output equ 48
+    _output dq 48 dup(0)
 
 section ".idata" import data readable writeable
     dd 0, 0, 0, RVA kernel_name, RVA kernel_table
