@@ -5,6 +5,11 @@ section ".text" code readable executable
     start:
         sub rsp, 8 * 5
 
+        mov rcx, _file
+        mov rdx, [_file_size]
+        mov r8, _output
+        call decode_utf8_list
+
         mov ecx, 0
         call [ExitProcess]
 
@@ -13,6 +18,7 @@ section ".data" data readable writeable
         ; 슝좍좍 슝좍 슝좍 좍 좍 슝좍좍 슝좍 슝좍 좍 좍
         ; 밥바라밥밥 바라바라바라~
         ; 정실은 마요
+    _file_size dq 118
     _output equ 48
 
 section ".idata" import data readable writeable
