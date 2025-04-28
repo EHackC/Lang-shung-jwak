@@ -19,5 +19,5 @@ fasm main.asm jwak.exe
 디버깅을 위해선 x64dbg같은 디버거가 필요합니다.
 
 ```
-make test/파일이름.asm test_파일이름.exe
+fasm test/파일이름.asm test_파일이름.exe
 ```
