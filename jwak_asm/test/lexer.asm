@@ -6,12 +6,12 @@ include "../lexer.inc"
 
 section ".text" code readable executable
     start:
-        sub rsp, 8 * 10
+        sub rsp, 8 * 6 + 8
 
-        ; call [GetProcessHeap]
-        ; mov [_heap_handle], rax
+        call [GetProcessHeap]
+        mov [_heap_handle], rax
 
-        ; 다 해줬잖아... 외안되...
+        ; 파일 열기
         mov rcx, _file_name
         mov edx, 0x80000000
         mov r8d, 0x1
@@ -22,25 +22,33 @@ section ".text" code readable executable
         call [CreateFile]
         mov [_file_handle], rax
 
-        call [GetLastError]
-
-        mov rcx, rax
-        mov rdx, _file_size
+        ; 파일 크기 가져오기
+        mov ecx, eax
+        mov edx, _file_size
         call [GetFileSizeEx]
-        mov [_file_size], rax
 
+        ; 파일 공간 할당
         mov rcx, [_heap_handle]
         mov rdx, 0
         mov r8, rax
         call [HeapAlloc]
         mov [_file_content_addr], rax
 
-        ; 파일 디코딩
+        ; 파일 읽기
+        mov rcx, [_file_handle]
+        mov rdx, [_file_content_addr]
+        mov r8, [_file_size]
+        mov r9, 0
+        mov qword [rsp + 8 * 4], 0
+        call [ReadFile]
+
+        ; 다코딩된 글자 수 구하기
         mov rcx, [_file_content_addr]
         mov rdx, [_file_size]
         mov r8, _text_length
         call get_utf8_text_length
 
+        ; 디코딩할 텍스트 크기만큼 공간 할당
         mov rax, [_text_length]
         shl rax, 2
         mov rcx, [_heap_handle]
@@ -49,21 +57,28 @@ section ".text" code readable executable
         call [HeapAlloc]
         mov [_output_addr], rax
 
+        ; 디코딩
         mov rcx, [_file_content_addr]
         mov rdx, [_file_size]
         mov r8, [_output_addr]
         call decode_utf8_list
 
+        ; 메모리 해제
         mov rcx, [_heap_handle]
         mov rdx, 0
         mov r8, [_output_addr]
+        call [HeapFree]
+
+        mov rcx, [_heap_handle]
+        mov rdx, 0
+        mov r8, [_file_content_addr]
         call [HeapFree]
 
         mov ecx, 0
         call [ExitProcess]
 
 section ".data" data readable writeable
-    _file_name db "README.md", 0 ;"test/lexer.jwak", 0
+    _file_name db "test/lexer.jwak", 0
     _file_handle dq 0
     _file_content_addr dq 0
     _file_size dq 0
@@ -84,7 +99,6 @@ section ".idata" import data readable writeable
         CreateFile dq RVA _CreateFileA
         ReadFile dq RVA _ReadFile
         GetFileSizeEx dq RVA _GetFileSizeEx
-        GetLastError dq RVA _GetLastError
         dq 0
 
     _ExitProcess dw 0
@@ -101,5 +115,3 @@ section ".idata" import data readable writeable
         db "ReadFile", 0
     _GetFileSizeEx dw 0
          db "GetFileSizeEx", 0
-    _GetLastError dw 0
-        db "GetLastError", 0
