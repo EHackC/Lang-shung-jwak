@@ -2,7 +2,7 @@ f_open:
     ; rcx - file name
     push rbp
     mov rbp, rsp
-    sub rsp, 8 * 6
+    sub rsp, 8 * 8
 
     mov rdx, 0x80000000
     mov r8, 0x1
@@ -12,7 +12,7 @@ f_open:
     mov dword [rsp + 8 * 6], 0
     call [CreateFile]
 
-    add rsp, 8 * 6
+    add rsp, 8 * 8
     pop rbp
     ret
 
