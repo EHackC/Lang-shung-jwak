@@ -1,42 +1,43 @@
 format PE64 console
 entry start
 
-include "../utf8.inc"
-
 section ".text" code readable executable
+    include "../memory.inc"
+    include "../utf8.inc"
+
     start:
         sub rsp, 8 * 5
 
-        call [GetProcessHeap]
-        mov [_heap_handle], rax
+        call memory_init
 
+        ; 파일 텍스트 길이 구하기
         mov rcx, _file
         mov rdx, [_file_size]
         mov r8, _text_length
         call get_utf8_text_length
 
-        mov rax, [_text_length]
-        shl rax, 2
-        mov rcx, [_heap_handle]
-        mov rdx, 0
-        mov r8, rax
-        call [HeapAlloc]
+        ; 메모리 할당
+        mov rcx, [_text_length]
+        shl rcx, 2
+        call m_alloc
         mov [_output_addr], rax
 
+        ; 디코딩
         mov rcx, _file
         mov rdx, [_file_size]
         mov r8, [_output_addr]
         call decode_utf8_list
 
-        mov rcx, [_heap_handle]
-        mov rdx, 0
-        mov r8, [_output_addr]
-        call [HeapFree]
+        ; 메모리 해제
+        mov rcx, [_output_addr]
+        call m_free
 
-        mov ecx, 0
+        xor rax, rax
         call [ExitProcess]
 
 section ".data" data readable writeable
+    include "../data.inc"
+
     _file db 0xEC, 0x8A, 0x9D, 0xEC, 0xA2, 0x8D, 0xEC, 0xA2, 0x8D, 0x20, 0xEC, 0x8A, 0x9D, 0xEC, 0xA2, 0x8D, 0x20, 0xEC, 0x8A, 0x9D, 0xEC, 0xA2, 0x8D, 0x20, 0xEC, 0xA2, 0x8D, 0x20, 0xEC, 0xA2, 0x8D, 0x20, 0xEC, 0x8A, 0x9D, 0xEC, 0xA2, 0x8D, 0xEC, 0xA2, 0x8D, 0x20, 0xEC, 0x8A, 0x9D, 0xEC, 0xA2, 0x8D, 0x20, 0xEC, 0x8A, 0x9D, 0xEC, 0xA2, 0x8D, 0x20, 0xEC, 0xA2, 0x8D, 0x20, 0xEC, 0xA2, 0x8D, 0x0D, 0x0A, 0xEB, 0xB0, 0xA5, 0xEB, 0xB0, 0x94, 0xEB, 0x9D, 0xBC, 0xEB, 0xB0, 0xA5, 0xEB, 0xB0, 0xA5, 0x20, 0xEB, 0xB0, 0x94, 0xEB, 0x9D, 0xBC, 0xEB, 0xB0, 0x94, 0xEB, 0x9D, 0xBC, 0xEB, 0xB0, 0x94, 0xEB, 0x9D, 0xBC, 0x7E, 0x0D, 0x0A, 0xEC, 0xA0, 0x95, 0xEC, 0x8B, 0xA4, 0xEC, 0x9D, 0x80, 0x20, 0xEB, 0xA7, 0x88, 0xEC, 0x9A, 0x94
         ; 슝좍좍 슝좍 슝좍 좍 좍 슝좍좍 슝좍 슝좍 좍 좍
         ; 밥바라밥밥 바라바라바라~
@@ -44,25 +45,6 @@ section ".data" data readable writeable
     _file_size dq 118
     _text_length dq 0
     _output_addr dq 0
-    _heap_handle dq 0
 
 section ".idata" import data readable writeable
-    dd 0, 0, 0, RVA kernel_name, RVA kernel_table
-    dd 0, 0, 0, 0, 0
-
-    kernel_name db "KERNEL32.DLL", 0
-    kernel_table:
-        ExitProcess dq RVA _ExitProcess
-        GetProcessHeap dq RVA _GetProcessHeap
-        HeapAlloc dq RVA _HeapAlloc
-        HeapFree dq RVA _HeapFree
-        dq 0
-
-    _ExitProcess dw 0
-        db "ExitProcess", 0
-    _GetProcessHeap dw 0
-        db "GetProcessHeap", 0
-    _HeapAlloc dw 0
-        db "HeapAlloc", 0
-    _HeapFree dw 0
-        db "HeapFree", 0
+    include "../import.inc"
