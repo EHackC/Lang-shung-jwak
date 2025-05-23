@@ -2,6 +2,8 @@ decode_utf8_list:
     ; rcx - file(addr) -> r10
     ; rdx - file size
     ; r8 - result(addr)
+    push rbp
+    mov rbp, rsp
 
     mov r10, rcx
 
@@ -60,12 +62,15 @@ decode_utf8_list:
         test rdx, rdx
         jne .decode_utf8_loop
 
+    pop rbp
     ret
 
 get_utf8_text_length:
     ; rcx - file(addr) -> r10
     ; rdx - file size
     ; r8 - result(addr)
+    push rbp
+    mov rbp, rsp
 
     mov r10, rcx
 
@@ -89,4 +94,5 @@ get_utf8_text_length:
         test rdx, rdx
         jne .utf8_length_loop
 
+    pop rbp
     ret
