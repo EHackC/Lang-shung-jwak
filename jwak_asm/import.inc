@@ -10,6 +10,7 @@
         CreateFile dq RVA _CreateFileA
         ReadFile dq RVA _ReadFile
         GetFileSizeEx dq RVA _GetFileSizeEx
+        CloseHandle dq RVA _CloseHandle
         dq 0
 
     _ExitProcess dw 0
@@ -25,4 +26,6 @@
     _ReadFile dw 0
         db "ReadFile", 0
     _GetFileSizeEx dw 0
-         db "GetFileSizeEx", 0
+        db "GetFileSizeEx", 0
+    _CloseHandle dw 0
+        db "CloseHandle", 0
