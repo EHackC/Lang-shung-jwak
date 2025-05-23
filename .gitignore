@@ -6,3 +6,5 @@ example/test.jwak
 .bsp
 .scala-build
 .metals
+
+*.exe
